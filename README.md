@@ -1,12 +1,67 @@
-[CollateX](http://collatex.net/) is a software to
+===============================
+CollateX-Python
+===============================
+..
+  .. image:: https://badge.fury.io/py/collatex.png
+		:target: http://badge.fury.io/py/collatex
 
- 1. read **multiple (≥ 2) versions of a text**, splitting each version into parts (tokens) to be compared,
- 1. **identify similarities of and differences between the versions** (including moved/transposed segments) by aligning tokens, and
- 1. output the alignment results in a **variety of formats for further processing**, for instance
- 1. to support **the production of a critical apparatus** or the stemmatical analysis of a text's genesis.
+  .. image:: https://travis-ci.org/rhdekker/collatex.png?branch=master
+		:target: https://travis-ci.org/rhdekker/collatex
 
-It resembles software used to compute differences between files (e.g. [diff](http://en.wikipedia.org/wiki/Diff)) or tools for [sequence alignment](http://en.wikipedia.org/wiki/Sequence_alignment) which are commonly used in Bioinformatics. While CollateX shares some of the techniques and algorithms with those tools, it mainly aims for a flexible and configurable approach to the problem of finding similarities and differences in texts, sometimes trading computational soundness or complexity for the user's ability to influence results.
+  .. image:: https://pypip.in/d/collatex/badge.png
+		:target: https://pypi.python.org/pypi/collatex
 
-As such it is primarily designed for use cases in disciplines like [Philology](http://en.wikipedia.org/wiki/Philology) or – more specifically – the field of [Textual Criticism](http://en.wikipedia.org/wiki/Textual_criticism) where the assessment of findings is based on interpretation and therefore can be supported by computational means but is not necessarily computable.
 
-Please go to <http://collatex.net/> for further information.
+CollateX is a software to
+
+- read multiple (>= 2) versions of a text, splitting each version into parts (tokens) to be compared,
+- identify similarities of and differences between the versions (including moved/transposed segments) by aligning tokens, and
+- output the alignment results in a variety of formats for further processing, for instance to support the production of a critical apparatus or the stemmatic analysis of a text's genesis.
+
+* Free software: GPLv3 license
+* Documentation: http://interedition.github.io/collatex/pythonport.html
+
+Features
+--------
+
+* Partially non-progressive multiple-sequence alignment
+* Multiple output formats: alignment table, variant graph
+* Near matching (optional)
+* Supports Python 3
+* Supports unicode (Python 3 only)
+
+
+How to install:
+---------------
+
+Mac/Linux:
+`pip install collatex`
+
+if you don't have pip installed, install it first with:
+`easy_install pip`
+
+For near matching functionality python-levenshtein C library is required.
+Install it with (on Mac OS X and Linux):
+`pip install python-levenshtein`. Windows users may need a precompiled binary distribution of this library if they want to use near matching.
+
+Simple example:
+---------------
+::
+
+  from collatex import *
+
+  collation = Collation()
+  collation.add_plain_witness("A", "The quick brown fox jumps over the dog.")
+  collation.add_plain_witness("B", "The brown fox jumps over the lazy dog.")
+
+  alignment_table = collate(collation)
+  print(alignment_table)
+
+
+When running from the command shell, run the example script with:
+::
+
+	python ./nameofscript.py
+
+
+

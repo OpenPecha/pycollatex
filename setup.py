@@ -3,14 +3,13 @@
 
 from setuptools import setup
 
-readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
+readme = open('README.md').read()
 
 setup(
-    name='collatex',
+    name='pycollatex',
     version='2.2',
     description='CollateX is a collation tool.',
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author='Ronald Haentjens Dekker',
     author_email='ronald.dekker@huygens.knaw.nl',
     url='https://github.com/interedition/collatex',
