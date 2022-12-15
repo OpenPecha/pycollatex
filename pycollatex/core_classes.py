@@ -11,6 +11,7 @@ import json
 import networkx as nx
 from collections import deque
 from networkx.algorithms.dag import topological_sort
+import regex
 import re
 from prettytable import PrettyTable
 from textwrap import fill
@@ -136,7 +137,7 @@ def visualizeTableHorizontal(table):
     for row in table.rows:
         cells = [row.header]
         t_list = [(token.token_data["t"] for token in cell) if cell else ["-"] for cell in row.cells]
-        cells.extend([re.sub('\s+$', '', "".join(cell)) for cell in t_list])
+        cells.extend([re.sub(r'\s+$', '', "".join(cell)) for cell in t_list])
         x.add_row(cells)
     # alignment can only be set after the field names are known.
     # since add_row sets the field names, it has to be set after x.add_row(cells)
@@ -159,8 +160,7 @@ class WordPunctuationTokenizer(object):
     # tokenizer splits on punctuation or whitespace
     def tokenize(self, contents):
         # whitespace is kept with whatever precedes it
-        return re.findall(r'\w+\s*|\W+', contents)
-
+        return regex.findall(r'(?u)\w+\s*|\W+', contents)
 
 class Token(object):
     # tokendata comes in the dictionary that we use for JSON input.
