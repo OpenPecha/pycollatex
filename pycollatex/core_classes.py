@@ -9,7 +9,7 @@ Tokenizer, Witness, VariantGraph, CollationAlgorithm
 """
 import json
 import networkx as nx
-from _collections import deque
+from collections import deque
 from networkx.algorithms.dag import topological_sort
 import re
 from prettytable import PrettyTable
@@ -334,7 +334,7 @@ def join(graph):
     while queue:
         vertex = queue.popleft()
         out_edges = graph.out_edges(vertex)
-        if len(out_edges) is 1:
+        if len(out_edges) == 1:
             (_, join_candidate) = next(iter(out_edges))
             can_join = join_candidate != end and len(graph.in_edges(join_candidate)) == 1
             if can_join:

@@ -11,9 +11,6 @@ from collatex.exceptions import SegmentationError
 from collatex.experimental_astar_aligner import ExperimentalAstarAligner
 import json
 from collatex.edit_graph_aligner import EditGraphAligner
-from collatex.display_module import display_alignment_table_as_html, visualize_table_vertically_with_colors
-from collatex.display_module import display_variant_graph_as_svg
-from collatex.display_module import display_alignment_table_as_csv
 from collatex.near_matching import perform_near_match
 
 
@@ -26,10 +23,6 @@ from collatex.near_matching import perform_near_match
 #   All columns are output as <app> elements, regardless of whether they have variation
 #   Each witness is in a separate <rdg> element with the siglum in a @wit attribute
 #       (i.e, witnesses with identical readings are nonetheless in separate <rdg> elements)
-# "tei" for the alignment table as TEI XML parallel segmentation (but in no namespace)
-#   Wrapper element is always <cx:apparatus> in the CollateX namespace
-#   indent=True pretty-prints the output
-#       (for proofreading convenience only; does not observe proper white-space behavior)
 def collate(collation, output="table", layout="horizontal", segmentation=True, near_match=False, astar=False,
             detect_transpositions=False, debug_scores=False, properties_filter=None, indent=False):
     # collation may be collation or json; if it's the latter, use it to build a real collation
@@ -62,26 +55,16 @@ def collate(collation, output="table", layout="horizontal", segmentation=True, n
         join(graph)
         ranking = VariantGraphRanking.of(graph)
     # check which output format is requested: graph or table
-    if output == "svg" or output == "svg_simple":
-        return display_variant_graph_as_svg(graph, output)
     if output == "graph":
         return graph
     # create alignment table
     table = AlignmentTable(collation, graph, layout, ranking)
     if output == "json":
         return export_alignment_table_as_json(table)
-    if output == "html":
-        return display_alignment_table_as_html(table)
-    if output == "html2":
-        return visualize_table_vertically_with_colors(table, collation)
     if output == "table":
         return table
     if output == "xml":
         return export_alignment_table_as_xml(table)
-    if output == "tei":
-        return export_alignment_table_as_tei(table, indent)
-    if output == "csv" or output == "tsv":
-        return display_alignment_table_as_csv(table, output)
     else:
         raise Exception("Unknown output type: " + output)
 
@@ -115,52 +98,3 @@ def export_alignment_table_as_xml(table):
         result = etree.tostring(app, encoding="unicode")
         readings.append(result)
     return "<root>" + "".join(readings) + "</root>"
-
-
-def export_alignment_table_as_tei(table, indent=None):
-    d = Document()
-    root = d.createElementNS("http://interedition.eu/collatex/ns/1.0", "cx:apparatus") # fake namespace declarations
-    root.setAttribute("xmlns:cx", "http://interedition.eu/collatex/ns/1.0")
-    root.setAttribute("xmlns", "http://www.tei-c.org/ns/1.0")
-    d.appendChild(root)
-    for column in table.columns:
-        value_dict = defaultdict(list)
-        ws_flag = False
-        for key, value in sorted(column.tokens_per_witness.items()):
-            # value_dict key is reading, value is list of witnesses
-            t_readings = "".join(item.token_data["t"] for item in value)
-            if ws_flag == False and t_readings.endswith((" ", r"\u0009", r"\000a")): # space, tab, lf
-                ws_flag = True
-            value_dict[t_readings.strip()].append(key)
-
-        # REVIEW [RHD]: Isn't there a method on table that can be used instead of this len(next(iter() etc?
-        # otherwise I think there should be. Not sure what len(next(iter(etc))) represents.
-        #
-        # See https://stackoverflow.com/questions/4002874/non-destructive-version-of-pop-for-a-dictionary
-        # It returns the number of witnesses that attest the one reading in the dictionary, that is, it peeks
-        #   nondestructively at the value of the single dictionary item, which is a list, and counts the members
-        #   of the list
-        if len(value_dict) == 1 and len(next(iter(value_dict.values()))) == len(table.rows):
-            # len(table.rows) is total number of witnesses; guards against nulls, which aren't in table
-            key, value = value_dict.popitem() # there's just one item
-            text_node = d.createTextNode(key)
-            root.appendChild(text_node)
-        else:
-            # variation is either more than one reading, or one reading plus nulls
-            app = d.createElementNS("http://www.tei-c.org/ns/1.0", "app")
-            root.appendChild(app)
-            for key, value in value_dict.items():
-                # key is reading (with trailing whitespace stripped), value is list of witnesses
-                rdg = d.createElementNS("http://www.tei-c.org/ns/1.0", "rdg")
-                rdg.setAttribute("wit", " ".join(["#" + item for item in value_dict[key]]))
-                text_node = d.createTextNode(key)
-                rdg.appendChild(text_node)
-                app.appendChild(rdg)
-        if ws_flag:
-            text_node = d.createTextNode(" ")
-            root.appendChild(text_node)
-    if indent:
-        result = d.toprettyxml()
-    else:
-        result = d.toxml()
-    return result
