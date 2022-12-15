@@ -1,5 +1,5 @@
 import unittest
-from collatex.core_classes import WordPunctuationTokenizer
+from pycollatex.core_classes import WordPunctuationTokenizer
 
 
 class Test(unittest.TestCase):

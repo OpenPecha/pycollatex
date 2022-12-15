@@ -5,8 +5,8 @@ Created on Aug 4, 2014
 '''
 import unittest
 from tests import unit_disabled
-from collatex.core_classes import Witness
-from collatex.experimental_astar_aligner import Aligner
+from pycollatex.core_classes import Witness
+from pycollatex.experimental_astar_aligner import Aligner
 
 
 class Test(unittest.TestCase):

@@ -7,9 +7,9 @@ import unittest
 from tests import unit_disabled
 from ClusterShell.RangeSet import RangeSet
 from array import array
-from collatex import Collation
-from collatex.extended_suffix_array import ExtendedSuffixArray, Block
-from collatex.suffix_based_scorer import Scorer
+from pycollatex import Collation
+from pycollatex.extended_suffix_array import ExtendedSuffixArray, Block
+from pycollatex.suffix_based_scorer import Scorer
 
 
 

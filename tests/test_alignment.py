@@ -5,8 +5,8 @@ Created on Jun 8, 2014
 '''
 import unittest
 from tests import unit_disabled
-from collatex import Collation
-from collatex import collate
+from pycollatex import Collation
+from pycollatex import collate
 
 
 class Test(unittest.TestCase):

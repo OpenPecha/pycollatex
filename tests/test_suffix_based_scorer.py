@@ -1,10 +1,10 @@
 import unittest
 from ClusterShell.RangeSet import RangeSet
-from collatex import Collation
-from collatex.extended_suffix_array import Block
-from collatex.core_functions import collate
-from collatex.suffix_based_scorer import Scorer
-from collatex.tokenindex import TokenIndex
+from pycollatex import Collation
+from pycollatex.extended_suffix_array import Block
+from pycollatex.core_functions import collate
+from pycollatex.suffix_based_scorer import Scorer
+from pycollatex.tokenindex import TokenIndex
 from tests import unit_disabled
 
 __author__ = 'ronalddekker'

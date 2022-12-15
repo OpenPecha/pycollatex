@@ -6,8 +6,8 @@ Created on Jun 11, 2014
 import json
 import unittest
 
-from collatex import collate
-from collatex.exceptions import *
+from pycollatex import collate
+from pycollatex.exceptions import *
 
 
 class Test(unittest.TestCase):

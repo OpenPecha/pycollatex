@@ -5,7 +5,7 @@ Created on Sep 12, 2014
 '''
 import unittest
 from tests import unit_disabled
-from collatex.core_functions import collate
+from pycollatex.core_functions import collate
 
 
 class Test(unittest.TestCase):

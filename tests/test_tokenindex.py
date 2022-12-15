@@ -2,8 +2,8 @@ import unittest
 from array import array
 
 from ClusterShell.RangeSet import RangeSet
-from collatex import Collation
-from collatex.tokenindex import TokenIndex
+from pycollatex import Collation
+from pycollatex.tokenindex import TokenIndex
 
 
 class Test(unittest.TestCase):

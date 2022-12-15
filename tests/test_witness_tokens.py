@@ -5,7 +5,7 @@ Created on Nov 20, 2014
 '''
 
 import unittest
-from collatex import Collation, collate
+from pycollatex import Collation, collate
 
 
 class Test(unittest.TestCase):

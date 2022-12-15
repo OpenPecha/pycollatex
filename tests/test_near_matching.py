@@ -4,8 +4,8 @@ Created on Sep 12, 2014
 @author: Ronald Haentjens Dekker
 '''
 import unittest
-from collatex import Collation, collate
-from collatex.exceptions import SegmentationError
+from pycollatex import Collation, collate
+from pycollatex.exceptions import SegmentationError
 
 
 class Test(unittest.TestCase):

@@ -4,8 +4,8 @@ Created on Sep 29, 2014
 @author: ronald
 '''
 import unittest
-from collatex import Collation
-from collatex.experimental_astar_aligner import ExperimentalAstarAligner
+from pycollatex import Collation
+from pycollatex.experimental_astar_aligner import ExperimentalAstarAligner
 
 
 class Test(unittest.TestCase):

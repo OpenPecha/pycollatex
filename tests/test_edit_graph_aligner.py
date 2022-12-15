@@ -5,9 +5,9 @@ Created on Aug 4, 2014
 '''
 import unittest
 from tests import unit_disabled
-from collatex.core_functions import VariantGraph, collate
-from collatex.edit_graph_aligner import EditGraphAligner
-from collatex import Collation
+from pycollatex.core_functions import VariantGraph, collate
+from pycollatex.edit_graph_aligner import EditGraphAligner
+from pycollatex import Collation
 
 
 class Test(unittest.TestCase):

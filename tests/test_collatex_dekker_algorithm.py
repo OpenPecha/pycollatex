@@ -5,8 +5,8 @@ Created on May 3, 2014
 '''
 import unittest
 from networkx.drawing.nx_pydot import to_pydot
-from collatex.core_classes import VariantGraph
-from collatex import Collation
+from pycollatex.core_classes import VariantGraph
+from pycollatex import Collation
 #from collatex.dekker_suffix_algorithm import DekkerSuffixAlgorithm
 
 

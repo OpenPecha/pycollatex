@@ -5,7 +5,7 @@ Created on Jun 11, 2014
 """
 import json
 import unittest
-from collatex.core_functions import Collation, collate
+from pycollatex.core_functions import Collation, collate
 
 
 class Test(unittest.TestCase):

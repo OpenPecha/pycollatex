@@ -1,5 +1,5 @@
 import unittest
-from collatex import Collation, collate
+from pycollatex import Collation, collate
 
 __author__ = 'ronalddekker'
 
@@ -21,5 +21,3 @@ class Test(unittest.TestCase):
         self.assertEqual("[a]", str(variant_graph.vertexWith('a').tokens['B']))
         self.assertEqual("[c]", str(variant_graph.vertexWith('c').tokens['A']))
         self.assertEqual("[c]", str(variant_graph.vertexWith('c').tokens['B']))
-
-
