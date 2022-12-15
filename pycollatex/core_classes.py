@@ -160,7 +160,7 @@ class WordPunctuationTokenizer(object):
     # tokenizer splits on punctuation or whitespace
     def tokenize(self, contents):
         # whitespace is kept with whatever precedes it
-        return regex.findall(r'(?u)\w+\s*|\W+', contents)
+        return regex.findall(r'(?u)\w+[\s་༌]*|\W+', contents)
 
 class Token(object):
     # tokendata comes in the dictionary that we use for JSON input.
@@ -191,7 +191,7 @@ class Witness(object):
             tokenizer = WordPunctuationTokenizer()
             tokens_as_strings = tokenizer.tokenize(self.content)
             for token_string in tokens_as_strings:
-                self._tokens.append(Token({'t': token_string, 'n': re.sub(r'\s+$', '', token_string)}))
+                self._tokens.append(Token({'t': token_string, 'n': re.sub(r'[\s་༌]+$', '', token_string)}))
         elif 'tokens' in witnessdata:
             for tk in witnessdata['tokens']:
                 self._tokens.append(Token(tk))
