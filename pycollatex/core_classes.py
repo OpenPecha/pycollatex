@@ -14,7 +14,7 @@ from networkx.algorithms.dag import topological_sort
 import re
 from prettytable import PrettyTable
 from textwrap import fill
-from collatex.exceptions import TokenError
+from pycollatex.exceptions import TokenError
 from collections import defaultdict
 
 

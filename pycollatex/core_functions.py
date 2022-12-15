@@ -6,12 +6,12 @@ Created on May 3, 2014
 from xml.etree import ElementTree as etree
 from xml.dom.minidom import Document
 from collections import defaultdict
-from collatex.core_classes import Collation, VariantGraph, join, AlignmentTable, VariantGraphRanking
-from collatex.exceptions import SegmentationError
-from collatex.experimental_astar_aligner import ExperimentalAstarAligner
+from pycollatex.core_classes import Collation, VariantGraph, join, AlignmentTable, VariantGraphRanking
+from pycollatex.exceptions import SegmentationError
+from pycollatex.experimental_astar_aligner import ExperimentalAstarAligner
 import json
-from collatex.edit_graph_aligner import EditGraphAligner
-from collatex.near_matching import perform_near_match
+from pycollatex.edit_graph_aligner import EditGraphAligner
+from pycollatex.near_matching import perform_near_match
 
 
 # Valid options for output are:

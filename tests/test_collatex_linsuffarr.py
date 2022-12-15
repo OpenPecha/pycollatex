@@ -4,7 +4,7 @@ Created on Apr 7, 2014
 @author: Ronald Haentjens Dekker
 '''
 import unittest
-from collatex.linsuffarr import SuffixArray
+from pycollatex.linsuffarr import SuffixArray
 
 
 

@@ -3,7 +3,7 @@ Created on Aug 5, 2014
 
 @author: Ronald Haentjens Dekker
 '''
-from collatex.extended_suffix_array import Occurrence, BlockWitness, Block,\
+from pycollatex.extended_suffix_array import Occurrence, BlockWitness, Block,\
     PartialOverlapException
 from operator import attrgetter
 from ClusterShell.RangeSet import RangeSet

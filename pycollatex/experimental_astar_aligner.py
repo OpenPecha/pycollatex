@@ -5,9 +5,9 @@ Created on Aug 4, 2014
 '''
 from prettytable import PrettyTable
 
-from collatex.astar import AStarNode, AStar
-from collatex.core_classes import CollationAlgorithm
-from collatex.suffix_based_scorer import Scorer
+from pycollatex.astar import AStarNode, AStar
+from pycollatex.core_classes import CollationAlgorithm
+from pycollatex.suffix_based_scorer import Scorer
 
 
 class ExperimentalAstarAligner(CollationAlgorithm):

@@ -5,9 +5,9 @@ Created on Aug 5, 2014
 '''
 from enum import Enum
 
-from collatex.core_classes import CollationAlgorithm, VariantGraphRanking, VariantGraph
-from collatex.tokenindex import TokenIndex
-from collatex.transposition_handling import TranspositionDetection
+from pycollatex.core_classes import CollationAlgorithm, VariantGraphRanking, VariantGraph
+from pycollatex.tokenindex import TokenIndex
+from pycollatex.transposition_handling import TranspositionDetection
 
 
 class EditGraphNode(object):

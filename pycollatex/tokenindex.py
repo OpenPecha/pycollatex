@@ -1,8 +1,8 @@
 from ClusterShell.RangeSet import RangeSet
-from collatex.block import Block
-from collatex.core_classes import Token
-from collatex.linsuffarr import SuffixArray
-from collatex.linsuffarr import UNIT_BYTE
+from pycollatex.block import Block
+from pycollatex.core_classes import Token
+from pycollatex.linsuffarr import SuffixArray
+from pycollatex.linsuffarr import UNIT_BYTE
 
 
 class Stack(list):

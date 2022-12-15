@@ -3,7 +3,7 @@
         
     @author: Ronald Haentjens Dekker
 '''
-from collatex.core_classes import VariantGraphRanking
+from pycollatex.core_classes import VariantGraphRanking
 
 # New transposition detection implementation, still beta quality
 # This implementation works with the new collation algorithm (LCP intervals and edit graph)

@@ -1,7 +1,7 @@
 """Functions and objects for near matching
     Called by: collate() (in core_functions.py) with near_match=True, segmentation=False
 """
-from collatex.core_classes import VariantGraphRanking
+from pycollatex.core_classes import VariantGraphRanking
 import Levenshtein
 from networkx.algorithms.dag import topological_sort
 from collections import defaultdict
