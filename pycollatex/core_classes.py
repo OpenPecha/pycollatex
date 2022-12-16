@@ -184,19 +184,14 @@ class Token(object):
 class Witness(object):
     def __init__(self, witnessdata):
         self.sigil = witnessdata['id']
-        self._tokens = []
-        if 'content' in witnessdata:
-            self.content = witnessdata['content']
-            # print("Witness "+sigil+" TOKENIZER IS CALLED!")
+        if 'tokens' in witnessdata:
+            self._tokens = witnessdata['tokens']
+        else:
+            self._tokens = []
             tokenizer = WordPunctuationTokenizer()
-            tokens_as_strings = tokenizer.tokenize(self.content)
+            tokens_as_strings = tokenizer.tokenize(witnessdata['content'])
             for token_string in tokens_as_strings:
                 self._tokens.append(Token({'t': token_string, 'n': re.sub(r'[\s་࿒༌]+$', '', token_string)}))
-        elif 'tokens' in witnessdata:
-            for tk in witnessdata['tokens']:
-                self._tokens.append(Token(tk))
-            # content string is used for generation of the suffix and LCP arrays.
-            self.content = ' '.join([x.token_string for x in self._tokens])
 
     def tokens(self):
         return self._tokens
