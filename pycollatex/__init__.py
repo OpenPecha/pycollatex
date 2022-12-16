@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __name__ = 'PyCollateX'
-__version__ = '3.0'
+__version__ = '3.0.0'
 
 
 from pycollatex.core_classes import Collation
