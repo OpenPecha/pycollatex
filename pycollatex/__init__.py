@@ -5,7 +5,7 @@ __name__ = 'PyCollateX'
 __version__ = '3.0.0'
 
 
-from pycollatex.core_classes import Collation
+from pycollatex.core_classes import Collation, Token
 from pycollatex.core_functions import collate
 
 __all__ = ["Collation", "collate"]

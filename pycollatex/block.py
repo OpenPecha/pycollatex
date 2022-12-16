@@ -95,5 +95,5 @@ class Instance:
     def get_witness_sigil(self):
         if self.block.token_index.token_array:
             start_token = self.block.token_index.token_array[self.start_token]
-            return start_token.token_data['_sigil']
+            return start_token.sigil
         return None

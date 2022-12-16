@@ -38,10 +38,12 @@ class Collation(object):
 
     def __init__(self):
         self.witnesses = []
+        self.witnesses_dic = {}
 
     def add_witness(self, witnessdata):
         witness = Witness(witnessdata)
         self.witnesses.append(witness)
+        self.witnesses_dic[witnessdata["id"]] = witness
 
     def add_plain_witness(self, sigil, content):
         return self.add_witness({'id': sigil, 'content': content})
@@ -118,7 +120,6 @@ class AlignmentTable(object):
         return str(create_table_visualization(self))
 
 
-# DISPLAY PART OF THE VARIANT GRAPH IN PLAIN/HTML AND VERTICAL OR HORIZONTAL!
 def create_table_visualization(table):
     # create visualization of alignment table
     if table.layout == "vertical":
@@ -136,7 +137,15 @@ def visualizeTableHorizontal(table):
     x.header = False
     for row in table.rows:
         cells = [row.header]
-        t_list = [(token.token_data["t"] for token in cell) if cell else ["-"] for cell in row.cells]
+        t_list = []
+        for cell in row.cells:
+            if cell:
+                for token in cell:
+                    if token.start and token.end:
+                        witness = table.collation.witnesses_dic[token.sigil]
+                        t_list.append(witness.content[token.start:token.end])
+            else:
+                t_list.append("-")
         cells.extend([re.sub(r'\s+$', '', "".join(cell)) for cell in t_list])
         x.add_row(cells)
     # alignment can only be set after the field names are known.
@@ -149,8 +158,15 @@ def visualizeTableVertically(table):
     x = PrettyTable()
     x.hrules = 1
     for row in table.rows:
-        # x.add_column(row.header, [fill(cell.token_data["t"], 20) if cell else "-" for cell in row.cells])
-        t_list = [(token.token_data["t"] for token in cell) if cell else ["-"] for cell in row.cells]
+        t_list = []
+        for cell in row.cells:
+            if cell:
+                for token in cell:
+                    if token.start and token.end:
+                        witness = table.collation.witnesses_dic[token.sigil]
+                        t_list.append(witness.content[token.start:token.end])
+            else:
+                t_list.append("-")
         x.add_column(row.header, [fill("".join(item), 20) for item in t_list])
     return x
 
@@ -164,34 +180,30 @@ class WordPunctuationTokenizer(object):
 
 class Token(object):
     # tokendata comes in the dictionary that we use for JSON input.
-    def __init__(self, tokendata=None):
-        if tokendata is None:
-            # We can have empty tokens.
-            self.token_string = ""
-            self.token_data = {}
-        elif 'n' in tokendata:
-            self.token_string = tokendata['n']
-        elif 't' in tokendata:
-            self.token_string = tokendata['t']
-        else:
-            raise TokenError('No defined token string in tokendata')
-        self.token_data = tokendata
+    def __init__(self, token_string: str, witness_id: str, start: int = None, end: int = None):
+        self.token_string = token_string
+        self.sigil = witness_id
+        self._token_array_position = None
+        self.start = start
+        self.end = end
 
     def __repr__(self):
         return self.token_string
 
+def normalize(s):
+    return re.sub(r'[\s་࿒༌]+$', '', s)
 
 class Witness(object):
     def __init__(self, witnessdata):
         self.sigil = witnessdata['id']
+        self.content = witnessdata['content']
         if 'tokens' in witnessdata:
             self._tokens = witnessdata['tokens']
         else:
             self._tokens = []
-            tokenizer = WordPunctuationTokenizer()
-            tokens_as_strings = tokenizer.tokenize(witnessdata['content'])
-            for token_string in tokens_as_strings:
-                self._tokens.append(Token({'t': token_string, 'n': re.sub(r'[\s་࿒༌]+$', '', token_string)}))
+            for m in WORD_PUNCTUATION_RE.finditer(witnessdata['content']):
+                t = Token(normalize(m.group(0)), self.sigil, m.start(), m.end())
+                self._tokens.append(t)
 
     def tokens(self):
         return self._tokens

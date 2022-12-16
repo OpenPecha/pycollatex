@@ -82,20 +82,11 @@ class MatchCube():
                     match = True
                     if properties_filter:
                         other = token_index.token_array[graph_start_token]
-                        token_data1 = self.filtered_token_data(token)
-                        token_data2 = self.filtered_token_data(other)
-                        match = properties_filter(token_data1, token_data2)
+                        match = properties_filter(token, other)
                     if match:
                         match = Match(v, token)
                         coordinate = MatchCoordinate(row, rank)
                         self.matches[coordinate] = match
-
-    @staticmethod
-    def filtered_token_data(token):
-        token_data1 = dict(token.token_data)
-        del token_data1['_sigil']
-        del token_data1['_token_array_position']
-        return token_data1
 
     @staticmethod
     def has_tokens(vertex):
@@ -349,12 +340,12 @@ class EditGraphAligner(CollationAlgorithm):
     def update_token_position_to_vertex(self, token_to_vertex, aligned={}):
         for token in token_to_vertex:
             # print("> token =", token)
-            position = token.token_data['_token_array_position']
+            position = token._token_array_position
             # print("> position =", position)
             self.token_position_to_vertex[position] = token_to_vertex[token]
         for token in aligned:
             # print("> token =", token)
-            position = token.token_data['_token_array_position']
+            position = token._token_array_position
             # print("> position =", position)
             self.token_position_to_vertex[position] = aligned[token]
 
