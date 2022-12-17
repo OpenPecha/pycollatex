@@ -25,7 +25,7 @@ collation = Collation()
 collation.add_plain_witness("A", "The quick brown fox jumps over the dog.")
 collation.add_plain_witness("B", "The brown fox jumps over the lazy dog.")
 
-collation_graph = collate(collation)
+collation_graph = collate(collation, segmentation=False)
 alignment_table = output_collation_graph(collation, collation_graph)
 print(alignment_table)
 ```
