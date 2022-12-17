@@ -390,8 +390,7 @@ class VariantGraphRanking(object):
     def of(cls, graph):
         # first determine rank by incoming sequence edges, ignoring near matching
         variant_graph_ranking = VariantGraphRanking()
-        topological_sorted_vertices = topological_sort(graph.graph)
-        reverse_topological_sorted_vertices = reversed(list(topological_sorted_vertices))
+        topological_sorted_vertices = list(topological_sort(graph.graph))
         for v in topological_sorted_vertices:
             rank = -1
             for (source, _) in graph.in_edges(v):
@@ -399,6 +398,7 @@ class VariantGraphRanking(object):
             rank += 1
             variant_graph_ranking.byVertex[v] = rank
             variant_graph_ranking.byRank.setdefault(rank, []).append(v)
+        reverse_topological_sorted_vertices = reversed(topological_sorted_vertices)
         for v in reverse_topological_sorted_vertices:
             incoming_edges = graph.in_near_edges(v, data=True)
             if incoming_edges:
