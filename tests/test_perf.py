@@ -14,7 +14,7 @@ t1_stop = perf_counter()
 
 # before refactoring: 1037s, now 17s
 
-print("time in Unicode: %f" % t1_stop-t1_start)
+print("time in Unicode:", t1_stop-t1_start)
 
 collation = Collation()
 collation.add_plain_witness("A", Path("data/t1_W1_wylie.txt").read_text())
@@ -28,7 +28,7 @@ t1_stop = perf_counter()
 
 # before refactoring: 65s, now 91s
 
-print("time in EWTS: %f" % t1_stop-t1_start)
+print("time in EWTS:", t1_stop-t1_start)
 
 #alignment_table = output_collation_graph(collation, collation_graph)
 #print(alignment_table)
