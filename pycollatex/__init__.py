@@ -6,6 +6,6 @@ __version__ = '3.0.0'
 
 
 from pycollatex.core_classes import Collation, Token
-from pycollatex.core_functions import collate
+from pycollatex.core_functions import collate, output_collation_graph
 
-__all__ = ["Collation", "collate"]
+__all__ = ["Collation", "collate", "output_collation_graph", "Token"]
