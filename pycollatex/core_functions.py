@@ -16,7 +16,6 @@ from pycollatex.near_matching import perform_near_match
 
 def collate(collation, segmentation=True, near_match=False, astar=False,
             detect_transpositions=False, debug_scores=False, properties_filter=None):
-
     # assume collation is a Collation object
     if not astar:
         algorithm = EditGraphAligner(collation, near_match=near_match, detect_transpositions=detect_transpositions,
