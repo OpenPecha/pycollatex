@@ -408,7 +408,8 @@ class SuffixArray(object):
     Constructs the suffix array of the string using the processing unit specified.
     """
 
-    def __init__(self, string, unit=DEFAULT_UNIT, encoding=DEFAULT_ENCODING, noLCPs=False):
+    def __init__(self, string, unit=DEFAULT_UNIT, encoding=DEFAULT_ENCODING, noLCPs=False, vocabulary=None):
+        print(string)
         if unit == UNIT_WORD:
             self.tokSep = " "
         elif unit in (UNIT_CHARACTER, UNIT_BYTE):
@@ -426,9 +427,16 @@ class SuffixArray(object):
         if _trace: print >> _stderr, "Tokenization done"
 
         if _trace: print >> _stderr, "Renaming tokens ...\r",
-        self.voc = [None] + sorted(set(string))
-        self.tokId = dict((char, iChar) for iChar, char in enumerate(self.voc))
-        self.string = [self.tokId[c] for c in string]
+        for s in string:
+            if type(s) is str:
+                print("%s is string" % s)
+        if vocabulary is None:
+            self.voc = [None] + sorted(string)
+            self.tokId = dict((char, iChar) for iChar, char in enumerate(self.voc))
+            self.string = [self.tokId[c] for c in string]
+        else:
+            self.voc = vocabulary.__codeToElement
+            self.tokId = vocabulary.__elementToCode
         if _trace: print >> _stderr, "Renaming tokens done"
 
         self.vocSize = len(self.voc)
@@ -440,12 +448,10 @@ class SuffixArray(object):
         del self.SA[self.length:]
         del self.string[self.length:]
 
-        self.nbSentences = self.string.count(self.tokId.get("\n", 0))
+        self.nbSentences = 0
 
         self.length = len(string)
         self.vocSize = len(self.voc) - 1  # decrement because of the None token
-        if "\n" in self.tokId:
-            self.vocSize -= 1  # decrement because of the EOL token
 
         self.features = []
 
@@ -904,152 +910,3 @@ class SuffixArray(object):
             features = [featureValues[lower:upper] for featureValues in features]
 
             return zip(res, *features)
-
-
-def parseArgv():
-    """
-    Command line option parser.
-    """
-    parser = OptionParser()
-    parser.usage = r""" cat <TEXT> | %prog [--unit <UNIT>] [--output <SA_FILE>]
-
-Create the suffix array of TEXT with the processing UNIT and optionally store it in SA_FILE for subsequent use.
-UNIT may be set to 'byte', 'character' (given an encoding with the --encoding option) or 'word', which is the default.
-"""
-
-    parser.add_option("-i", "--input",
-                      action="store", type="string", dest="input",
-                      default=False,
-                      help="Path of the file containing the input text. When '-' is given, read the standard input (default). If the path ends with '.gz', reads the decompressed file.")
-
-    parser.add_option("-o", "--output",
-                      action="store", type="string", dest="output",
-                      default=False,
-                      help="Store the suffix array of the input to the file OUTPUT. When '-' is given, writes to the standard output. If the filename ends with '.gz', the suffix array will be stored  compressed.")
-
-    parser.add_option("", "--load",
-                      action="store", type="string", dest="SAFile",
-                      default=False,
-                      help="Load a suffix array from SAFILE, this option and --input are mutually exclusive.")
-
-    parser.add_option("-u", "--unit",
-                      action="store", type="string", dest="unit",
-                      default=DEFAULT_UNIT_STR,
-                      help="Processing unit used for the creation of the suffix array." + \
-                           'Possible values are "byte", "character" and "word". Default is "%s".' % DEFAULT_UNIT_STR + \
-                           "This option is ignored when the suffix array is loaded from SAFILE." + \
-                           'For characters, the input is decoded according to the encoding set via the option --encoding.')
-
-    parser.add_option("-e", "--encoding",
-                      action="store", type="string", dest="encoding",
-                      default=DEFAULT_ENCODING,
-                      help="Encoding of the input. This information is required only when processing characters. Default is '%s'." % DEFAULT_ENCODING)
-
-    parser.add_option("-p", "--print",
-                      action="store_true", dest="printSA",
-                      default=False,
-                      help="Prints the suffix array in a human readable format to the standard error output.")
-
-    parser.add_option("", "--verbose",
-                      action="store_true", dest="verbose",
-                      default=False,
-                      help="Prints more information.")
-
-    parser.add_option("", "--no-lcps",
-                      action="store_true", dest="noLCPs",
-                      default=False,
-                      help="Switch off the computation of LCPs. By doing so, the find functions are unusable.")
-
-    (options, args) = parser.parse_args(_argv)
-    strings = args[1:]
-    return (options, strings)
-
-
-def main():
-    """
-    Entry point for the standalone script.
-
-    """
-    (options, strings) = parseArgv()
-    global _suffixArray, _trace
-
-    #############
-    # Verbosity #
-    #############
-    _trace = options.verbose
-
-    ###################
-    # Processing unit #
-    ###################
-    if options.unit == "byte":
-        options.unit = UNIT_BYTE
-    elif options.unit == "character":
-        options.unit = UNIT_CHARACTER
-    elif options.unit == "word":
-        options.unit = UNIT_WORD
-    else:
-        print >> _stderr, "Please specify a valid unit type."
-        exit(EXIT_BAD_OPTION)
-
-    ######################
-    # Build suffix array #
-    ######################
-    if not options.SAFile:  # Build the suffix array from INPUT
-        if not options.input:  # default is standard input
-            options.input = "-"
-        try:
-            string = _open(options.input, "r").read()
-        except IOError:
-            print >> _stderr, "File %s does not exist." % options.input
-            exit(EXIT_ERROR_FILE)
-
-        SA = SuffixArray(string, options.unit, options.encoding, options.noLCPs)
-    ########################
-    # Or load suffix array #
-    ########################
-    elif not options.input and options.SAFile:  # Load suffix array from SA_FILE
-        try:
-            SA = SuffixArray.fromFile(options.SAFile)
-        except IOError:
-            print >> _stderr, "SA_FILE %s does not exist." % options.SAFile
-            exit(EXIT_ERROR_FILE)
-    else:
-        print >> _stderr, "Please set only one option amongst --input and --load.\n" + \
-        "Type %s --help for more details." % _argv[0]
-        exit(EXIT_BAD_OPTION)
-
-    ######################
-    # Print suffix array #
-    ######################
-    if options.printSA:
-        # Buffered ouptut
-        deltaLength = 1000
-        start = 0
-        while start < SA.length:
-            print >> _stderr, SA.__str__(start, start + deltaLength)
-            start += deltaLength
-
-    ####################################
-    # Look for every string in strings #
-    ####################################
-    for string in strings:
-        print >> _stderr, ""
-        print >> _stderr, "Positions of %s:" % string
-        print >> _stderr, "  %s" % list(SA.find(string))
-
-    #########################
-    # Save SAFILE if needed #
-    #########################
-    if options.output:
-        SA.toFile(options.output)
-
-    if _trace: print >> _stderr, "Done\r\n"
-
-
-if __name__ == "__main__":
-    if len(_argv) == 2 and _argv[1] == "--test":
-        from doctest import testmod
-
-        testmod()
-    else:
-        main()

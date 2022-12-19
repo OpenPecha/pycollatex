@@ -15,8 +15,9 @@ class Stack(list):
 
 # TokenIndex
 class TokenIndex(object):
-    def __init__(self, witnesses):
-        self.witnesses = witnesses
+    def __init__(self, collation):
+        self.witnesses = collation.witnesses
+        self.vocabulary = collation.vocabulary
         # print("\nwitnesses=",witnesses)
         self.counter = 0
         self.witness_ranges = {}
@@ -60,7 +61,7 @@ class TokenIndex(object):
                 token_array_position += 1
             self.token_array.extend(witness.tokens())
             # # add marker token
-            self.token_array.append(Token('$' + str(idx), witness.sigil))
+            self.token_array.append(Token(self.vocabulary.encode('$' + str(idx)), witness.sigil))
             token_array_position += 1
         self.token_array.pop()  # remove last marker
 

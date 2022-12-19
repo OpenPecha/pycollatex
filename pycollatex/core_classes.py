@@ -18,6 +18,52 @@ from textwrap import fill
 from pycollatex.exceptions import TokenError
 from collections import defaultdict
 
+# Code inspired from
+# https://github.com/eseraygun/python-alignment/blob/master/alignment/vocabulary.py
+
+GAP_ELEMENT = ''
+GAP_CODE = 0
+
+class Vocabulary(object):
+    def __init__(self):
+        self.__elementToCode = {GAP_ELEMENT: GAP_CODE}
+        self.__codeToElement = [GAP_ELEMENT]
+        self.__last = 1
+
+    def has(self, element):
+        return element in self.__elementToCode
+
+    def hasCode(self, code):
+        return code <= self.__last
+
+    def encode(self, element):
+        code = self.__elementToCode.get(element)
+        if code is None:
+            self.__last += 1
+            code = self.__last
+            self.__elementToCode[element] = code
+            self.__codeToElement.append(element)
+        return code
+
+    def decode(self, code):
+        try:
+            return self.__codeToElement[code]
+        except KeyError:
+            raise KeyError(
+                'there is no elements in the vocabulary encoded as %d' % code)
+
+    def elements(self):
+        return [self.decode(c) for c in sorted(self.__codeToElement)]
+
+    def __len__(self):
+        return len(self.__elementToCode)
+
+    def __iter__(self):
+        return iter(self.__elementToCode)
+
+    def __repr__(self):
+        return repr(self.elements())
+
 
 class Collation(object):
     @classmethod
@@ -36,12 +82,16 @@ class Collation(object):
         collation = cls.create_from_dict(data)
         return collation
 
-    def __init__(self):
+    def __init__(self, vocabulary=None):
+        if vocabulary:
+            self.vocabulary = vocabulary
+        else:
+            self.vocabulary = Vocabulary()
         self.witnesses = []
         self.witnesses_dic = {}
 
     def add_witness(self, witnessdata):
-        witness = Witness(witnessdata)
+        witness = Witness(witnessdata, self.vocabulary)
         self.witnesses.append(witness)
         self.witnesses_dic[witnessdata["id"]] = witness
 
@@ -172,12 +222,6 @@ def visualizeTableVertically(table):
 
 WORD_PUNCTUATION_RE = regex.compile(r'(?u)\w+[\s་༌࿒]*|\W+')
 
-class WordPunctuationTokenizer(object):
-    # tokenizer splits on punctuation or whitespace
-    def tokenize(self, contents):
-        # whitespace is kept with whatever precedes it
-        return WORD_PUNCTUATION_RE.findall(contents)
-
 class Token(object):
     # tokendata comes in the dictionary that we use for JSON input.
     def __init__(self, token_string: str, witness_id: str, start: int = None, end: int = None):
@@ -194,7 +238,7 @@ def normalize(s):
     return re.sub(r'[\s་࿒༌]+$', '', s)
 
 class Witness(object):
-    def __init__(self, witnessdata):
+    def __init__(self, witnessdata, vocabulary):
         self.sigil = witnessdata['id']
         self.content = witnessdata['content']
         if 'tokens' in witnessdata:
@@ -202,7 +246,9 @@ class Witness(object):
         else:
             self._tokens = []
             for m in WORD_PUNCTUATION_RE.finditer(witnessdata['content']):
-                t = Token(normalize(m.group(0)), self.sigil, m.start(), m.end())
+                s = normalize(m.group(0))
+                c = vocabulary.encode(s)
+                t = Token(c, self.sigil, m.start(), m.end())
                 self._tokens.append(t)
 
     def tokens(self):
